@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Facade;
 
-use App\Repository\ProductRepository;
+use App\Dto\CreateProductDto;
+use App\Dto\UpdateProductDto;
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 
 class ProductFacade
 {
@@ -23,9 +27,9 @@ class ProductFacade
         return $this->productRepository->findById($id);
     }
 
-    public function createProduct(string $name, float $price): Product
+    public function createProduct(CreateProductDto $dto): Product
     {
-        $id = $this->productRepository->insert($name, $price);
+        $id = $this->productRepository->insert($dto->name, $dto->price);
         $product = $this->productRepository->findById($id);
 
         if ($product === null) {
@@ -35,9 +39,9 @@ class ProductFacade
         return $product;
     }
 
-    public function updateProduct(int $id, string $name, float $price): bool
+    public function updateProduct(int $id, UpdateProductDto $dto): bool
     {
-        return $this->productRepository->update($id, $name, $price);
+        return $this->productRepository->update($id, $dto->name, $dto->price);
     }
 
     public function deleteProduct(int $id): bool

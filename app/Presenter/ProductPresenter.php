@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Presenter;
 
+use App\Dto\CreateProductDto;
+use App\Dto\UpdateProductDto;
 use App\Facade\ProductFacade;
-use Nette\Application\UI\Presenter;
-use Nette\Http\Request;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\JsonResponse;
+use Nette\Application\UI\Presenter;
+use Nette\Http\Request;
 
 final class ProductPresenter extends Presenter
 {
@@ -36,12 +40,13 @@ final class ProductPresenter extends Presenter
     public function actionCreate(): void
     {
         $data = $this->getJsonBody();
+        $dto = new CreateProductDto(
+            name: $data['name'] ?? throw new BadRequestException('Missing name'),
+            price: isset($data['price']) ? (float)$data['price'] : throw new BadRequestException('Missing price'),
+        );
 
-        if (!isset($data['name'], $data['price'])) {
-            throw new BadRequestException('Missing name or price');
-        }
+        $product = $this->productFacade->createProduct($dto);
 
-        $product = $this->productFacade->createProduct($data['name'], (float)$data['price']);
         $this->sendResponse(new JsonResponse($product));
     }
 
@@ -49,11 +54,12 @@ final class ProductPresenter extends Presenter
     {
         $data = $this->getJsonBody();
 
-        if (!isset($data['name'], $data['price'])) {
-            throw new BadRequestException('Missing name or price');
-        }
+        $dto = new UpdateProductDto(
+            name: $data['name'] ?? throw new BadRequestException('Missing name'),
+            price: isset($data['price']) ? (float) $data['price'] : throw new BadRequestException('Missing price'),
+        );
 
-        $success = $this->productFacade->updateProduct($id, $data['name'], (float)$data['price']);
+        $success = $this->productFacade->updateProduct($id, $dto);
 
         if (!$success) {
             throw new BadRequestException('Product not found', 404);
@@ -73,10 +79,14 @@ final class ProductPresenter extends Presenter
         $this->sendResponse(new JsonResponse(['success' => true]));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getJsonBody(): array
     {
         $raw = $this->httpRequest->getRawBody();
-        $data = json_decode($raw, true);
+        $data = $raw !== null ? json_decode($raw, true) : null;
+
 
         if (!is_array($data)) {
             throw new BadRequestException('Invalid JSON body');

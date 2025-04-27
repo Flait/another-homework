@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Product;
@@ -36,11 +38,15 @@ class ProductRepository
         $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
 
         $row = $this->db->table('products')->insert([
-            'name' => $name,
-            'price' => $price,
+            'name'       => $name,
+            'price'      => $price,
             'created_at' => $now,
             'updated_at' => $now,
         ]);
+
+        if (!$row instanceof \Nette\Database\Table\ActiveRow) {
+            throw new \RuntimeException('Insert into products failed.');
+        }
 
         return (int) $row->id;
     }
@@ -50,8 +56,8 @@ class ProductRepository
         $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
 
         return $this->db->table('products')->where('id', $id)->update([
-                'name' => $name,
-                'price' => $price,
+                'name'       => $name,
+                'price'      => $price,
                 'updated_at' => $now,
             ]) > 0;
     }
@@ -67,8 +73,8 @@ class ProductRepository
             id: (int) $row->id,
             name: (string) $row->name,
             price: (float) $row->price,
-            createdAt: new \DateTimeImmutable($row->created_at),
-            updatedAt: new \DateTimeImmutable($row->updated_at),
+            createdAt: new \DateTimeImmutable($row->created_at->format('Y-m-d H:i:s')),
+            updatedAt: new \DateTimeImmutable($row->updated_at->format('Y-m-d H:i:s')),
         );
     }
 }
