@@ -1,0 +1,24 @@
+parameters:
+	databaseDsn: %env(DATABASE_DSN)%
+	databaseUser: %env(DATABASE_USER)%
+	databasePassword: %env(DATABASE_PASSWORD)%
+
+application:
+	errorPresenter:
+		4xx: Error:Error4xx
+		5xx: Error:Error5xx
+	mapping:
+		*: App\Presenter\*Presenter
+
+
+database:
+	dsn: %databaseDsn%
+	user: %databaseUser%
+	password: %databasePassword%
+
+
+
+di:
+	export:
+		parameters: no
+		tags: no
