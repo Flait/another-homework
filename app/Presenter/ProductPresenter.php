@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Presenter;
 
 use App\Dto\CreateProductDto;
+use App\Dto\ProductQueryDto;
 use App\Dto\UpdateProductDto;
+use App\Enum\ProductFilter;
 use App\Facade\ProductFacade;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\JsonResponse;
@@ -23,8 +25,20 @@ final class ProductPresenter extends Presenter
 
     public function actionGetAll(): void
     {
-        $products = $this->productFacade->getAllProducts();
-        $this->sendResponse(new JsonResponse($products));
+        $query = ProductQueryDto::fromParams(
+            $this->getParameter('page'),
+            $this->getParameter('per_page'),
+            $this->getParameter(ProductFilter::MIN_PRICE->value),
+            $this->getParameter(ProductFilter::MAX_PRICE->value),
+        );
+
+        ['data' => $dtos, 'meta' => $meta] = $this->productFacade
+            ->getProductsList($query);
+
+        $this->sendResponse(new JsonResponse([
+            'data' => $dtos,
+            'meta' => $meta,
+        ]));
     }
 
     public function actionGetById(int $id): void

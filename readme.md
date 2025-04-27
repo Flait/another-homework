@@ -1,72 +1,87 @@
-
 # Geomat Test Project
 
-Jednoduchá PHP aplikace vytvořená jako testovací zadání pro správu produktů přes REST API.
+A simple PHP application created as a test assignment for managing products via a REST API.
 
-## Použité technologie
+## Considerations
+
+1. **Security Considerations**
+    - **Strict HTTP Methods**: We restrict each endpoint to only the methods it needs (do it in the rounter via custom Route), e.g.:
+        - `POST` for creating products
+        - `PUT` for updating products
+        - `DELETE` for removing products
+        - `GET` for fetching products  
+          This minimizes the risk of unauthorized or unintended actions.
+    - **Authorization**: We recommend token-based authentication (e.g. JWT) to verify user identities, plus role-based access control (RBAC) so that, for instance, only admins can update or delete products.
+    - **Rate Limiting**: To prevent abuse (e.g. DoS attacks) and ensure fair usage, implement rate limiting via middleware or a service such as Redis.
+
+2. **API Documentation Generation**
+    - **Automatic Documentation Generation**  
+      By using Entities and DTOs, you can leverage tools like Swagger-php or OpenAPI annotations to generate interactive docs straight from your code. This keeps docs in sync with your endpoints, request/response models, and data types.
+    - **Custom Routing for Documentation**  
+      If you need more control, choose a package that supports custom routing to integrate seamlessly with OpenAPI. That lets you centralize routing and documentation maintenance.
+    - **Manual OpenAPI Documentation**  
+      If automation isn’t an option, you can hand-craft an OpenAPI spec—but remember you’ll need to update it manually whenever your API evolves.
+
+## Technologies Used
 
 - PHP 8.3
 - Nette Framework
 - PostgreSQL 15
 - Docker & Docker Compose
-- PHPStan (statická analýza kódu)
-- PHP-CS-Fixer (formátování kódu podle PSR-12)
+- PHPStan (static code analysis)
+- PHP-CS-Fixer (PSR-12 code formatting)
 
-## Požadavky
+## Requirements
 
 - Docker
 - Docker Compose
 - Git
 
-## Instalace a spuštění
+## Installation & Running
 
-1. Naklonujte repozitář:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/geomat-test-project.git
+   cd geomat-test-project
+   ```
 
-```bash
-git clone https://github.com/your-username/geomat-test-project.git
-cd geomat-test-project
-```
+2. **Create your `.env` file**
+   ```bash
+   cp .env.local .env
+   ```
 
-2. Vytvořte `.env` soubor z předpřipraveného `.env.local`:
+3. **Start the services**
+   ```bash
+   docker-compose up -d
+   ```
 
-```bash
-cp .env.local .env
-```
+4. **Visit the application**
+   ```
+   http://localhost:8000
+   ```
 
-3. Spusťte Docker Compose:
+## Code Analysis & Formatting
 
-```bash
-docker-compose up -d
-```
+### Static Analysis with PHPStan
 
-4. Aplikace bude dostupná na:
-
-```
-http://localhost:8000
-```
-
-## Analýza kódu a formátování
-
-### Statická analýza pomocí PHPStan
-
-Spuštění PHPStan analýzy:
+Run the analyzer to verify code quality:
 
 ```bash
 docker-compose run --rm phpstan analyse
 ```
 
-Tím ověříte kvalitu a správnost kódu.
+### Automatic Formatting with PHP-CS-Fixer
 
----
-
-### Automatické formátování kódu pomocí PHP-CS-Fixer
-
-Spuštění PHP-CS-Fixeru:
+Install and apply PSR-12 formatting:
 
 ```bash
-vendor/bin/php-cs-fixer fix --allow-risky=yes
+docker-compose exec php vendor/bin/php-cs-fixer fix
 ```
 
-Tím automaticky upravíte kód podle standardu [PSR-12](https://www.php-fig.org/psr/psr-12/) a přidáte další doporučené úpravy.
+### Running Tests with PHPUnit
 
----
+Execute your test suite:
+
+```bash
+```docker-compose exec php vendor/bin/phpunit```
+```
