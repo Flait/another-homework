@@ -5,13 +5,7 @@ A simple PHP application created as a test assignment for managing products via 
 ## Considerations
 
 1. **Security Considerations**
-    - **Strict HTTP Methods**: We restrict each endpoint to only the methods it needs (do it in the rounter via custom Route), e.g.:
-        - `POST` for creating products
-        - `PUT` for updating products
-        - `DELETE` for removing products
-        - `GET` for fetching products  
-          This minimizes the risk of unauthorized or unintended actions.
-    - **Authorization**: We recommend token-based authentication (e.g. JWT) to verify user identities, plus role-based access control (RBAC) so that, for instance, only admins can update or delete products.
+    - **Authorization**: i recommend token-based authentication (e.g. JWT) to verify user identities, plus role-based access control (RBAC) so that, for instance, only admins can update or delete products.
     - **Rate Limiting**: To prevent abuse (e.g. DoS attacks) and ensure fair usage, implement rate limiting via middleware or a service such as Redis.
 
 2. **API Documentation Generation**
