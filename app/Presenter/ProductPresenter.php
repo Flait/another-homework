@@ -14,7 +14,7 @@ use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
 use Nette\Http\Request;
 
-final class ProductPresenter extends Presenter
+final class ProductPresenter extends BaseApiPresenter
 {
     public function __construct(
         private ProductFacade $productFacade,

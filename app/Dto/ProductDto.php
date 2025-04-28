@@ -11,9 +11,8 @@ final class ProductDto
     public int                 $id;
     public string              $name;
     public float               $price;
-    public ?string             $category;
-    public \DateTimeImmutable  $createdAt;
-    public \DateTimeImmutable  $updatedAt;
+    public string  $created_at;
+    public string  $updated_at;
 
     private function __construct()
     {
@@ -25,12 +24,8 @@ final class ProductDto
         $dto->id = $p->getId();
         $dto->name = $p->getName();
         $dto->price = $p->getPrice();
-        // if your entity has category:
-        $dto->category = method_exists($p, 'getCategory')
-            ? $p->getCategory()
-            : null;
-        $dto->createdAt = $p->getCreatedAt();
-        $dto->updatedAt = $p->getUpdatedAt();
+        $dto->created_at = $p->getCreatedAt()->format('Y-m-d H:i:s');
+        $dto->updated_at = $p->getUpdatedAt()->format('Y-m-d H:i:s');
         return $dto;
     }
 }
